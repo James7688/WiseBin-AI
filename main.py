@@ -11,9 +11,9 @@ MODEL_PATH = "wisebin.h5"
 
 try:
     model = load_model(MODEL_PATH, compile=False)
-    print("✅ Model loaded successfully!")
+    print("Model loaded successfully!")
 except Exception as e:
-    print("⚠️ Standard load failed, rebuilding model for current TF:", e)
+    print("Standard load failed, rebuilding model for current TF:", e)
     base = tf.keras.applications.MobileNetV2(
         include_top=False, weights=None, input_shape=(224,224,3)
     )
@@ -26,7 +26,7 @@ except Exception as e:
         layers.Dense(4, activation="softmax")
     ])
     model.load_weights(MODEL_PATH)
-    print("✅ Model rebuilt and weights loaded!")
+    print("Model rebuilt and weights loaded!")
 
 # =========================================================
 # GPU Setup
@@ -36,11 +36,11 @@ if gpus:
     try:
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)
-        print(f"🟢 Using GPU: {gpus[0].name}")
+        print(f"Using GPU: {gpus[0].name}")
     except RuntimeError as e:
         print(e)
 else:
-    print("⚠️ No GPU found, running on CPU")
+    print("No GPU found, running on CPU")
 
 # =========================================================
 # Class names and colors
@@ -58,7 +58,7 @@ colors = {
 # =========================================================
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
-    print("❌ Cannot open camera")
+    print("Cannot open camera")
     exit()
 
 print("🎥 Press 'q' to quit")
@@ -69,7 +69,7 @@ print("🎥 Press 'q' to quit")
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("⚠️ Frame grab failed")
+        print("Frame grab failed")
         break
 
     # Resize for model input
@@ -97,11 +97,12 @@ while True:
     cv2.imshow("WiseBin Trash Sorter", frame)
 
     # Print to terminal
-    print(f"♻️ Sort into: {cls_name}  |  Confidence: {conf:.1f}%")
+    print(f"Sort into: {cls_name}  |  Confidence: {conf:.1f}%")
 
     # Quit on 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
+
 cv2.destroyAllWindows()
